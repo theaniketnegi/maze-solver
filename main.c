@@ -44,7 +44,11 @@ void printMaze(char maze[MAX_ROWS][MAX_COLS], int rows, int cols)
 	{
 		for (int j = 0; j < cols; j++)
 		{
-			printf("%c", maze[i][j]);
+			if (maze[i][j] == '#')
+				printf("\033[1;31m");
+			else
+				printf("\033[0;32m");
+			printf("%c ", maze[i][j]);
 		}
 		printf("\n");
 	}
@@ -102,14 +106,7 @@ int dfs(char maze[MAX_ROWS][MAX_COLS], int rows, int cols, int visited[rows][col
 	{
 		maze[row][col] = '@';
 		system("clear");
-		for (int i = 0; i < rows; i++)
-		{
-			for (int j = 0; j < cols; j++)
-			{
-				printf("%c ", maze[i][j]);
-			}
-			printf("\n");
-		}
+		printMaze(maze, rows, cols);
 		sleep(0);
 		return 1;
 	}
@@ -128,14 +125,7 @@ int dfs(char maze[MAX_ROWS][MAX_COLS], int rows, int cols, int visited[rows][col
 		{
 			maze[row][col] = '@';
 			system("clear");
-			for (int i = 0; i < rows; i++)
-			{
-				for (int j = 0; j < cols; j++)
-				{
-					printf("%c ", maze[i][j]);
-				}
-				printf("\n");
-			}
+			printMaze(maze, rows, cols);
 			sleep(0);
 			return 1;
 		}
@@ -144,6 +134,10 @@ int dfs(char maze[MAX_ROWS][MAX_COLS], int rows, int cols, int visited[rows][col
 		{
 			for (int j = 0; j < cols; j++)
 			{
+				if (visited[i][j] == 0)
+					printf("\033[1;31m");
+				else
+					printf("\033[0;32m");
 				printf("%d ", visited[i][j]);
 			}
 			printf("\n");
@@ -204,6 +198,10 @@ void bfs(char maze[MAX_ROWS][MAX_COLS], int rows, int cols, int visited[rows][co
 			{
 				for (int j = 0; j < cols; j++)
 				{
+					if (visited[i][j] == 0)
+						printf("\033[1;31m");
+					else
+						printf("\033[0;32m");
 					printf("%d ", visited[i][j]);
 				}
 				printf("\n");
@@ -235,6 +233,10 @@ void bfs(char maze[MAX_ROWS][MAX_COLS], int rows, int cols, int visited[rows][co
 			{
 				for (int j = 0; j < cols; j++)
 				{
+					if (path[i][j] == '#')
+						printf("\033[1;31m");
+					else
+						printf("\033[0;32m");
 					printf("%c ", path[i][j]);
 				}
 				printf("\n");
@@ -282,13 +284,13 @@ int main()
 
 	printf("\n\nTRAVERSAL:\n");
 
-	// bfs(maze, rows, cols, visited, start, end);
-	if (dfs(maze, rows, cols, visited, start, end))
-	{
-		printf("Found the end\n");
-	}
-	else
-	{
-		printf("Couldn't find the end\n");
-	}
+	bfs(maze, rows, cols, visited, start, end);
+	// if (dfs(maze, rows, cols, visited, start, end))
+	// {
+	// 	printf("Found the end\n");
+	// }
+	// else
+	// {
+	// 	printf("Couldn't find the end\n");
+	// }
 }
