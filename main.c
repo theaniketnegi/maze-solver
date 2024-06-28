@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include "queue.h"
 
 #define MAX_ROWS 100
@@ -18,7 +19,7 @@ int comparePos(Position p1, Position p2)
 
 void readMaze(char *filename, char maze[MAX_ROWS][MAX_COLS], int *rows, int *cols)
 {
-	FILE *file = fopen("maze.txt", "r");
+	FILE *file = fopen(filename, "r");
 	if (!file)
 	{
 		perror("Error opening file");
@@ -99,7 +100,17 @@ int dfs(char maze[MAX_ROWS][MAX_COLS], int rows, int cols, int visited[rows][col
 
 	if (comparePos(pos, end))
 	{
-		maze[row][col] = '1';
+		maze[row][col] = '@';
+		system("clear");
+		for (int i = 0; i < rows; i++)
+		{
+			for (int j = 0; j < cols; j++)
+			{
+				printf("%c ", maze[i][j]);
+			}
+			printf("\n");
+		}
+		sleep(0);
 		return 1;
 	}
 	visited[row][col] = 1;
@@ -115,12 +126,31 @@ int dfs(char maze[MAX_ROWS][MAX_COLS], int rows, int cols, int visited[rows][col
 
 		if (dfs(maze, rows, cols, visited, newPos, end))
 		{
-			maze[row][col] = '1';
+			maze[row][col] = '@';
+			system("clear");
+			for (int i = 0; i < rows; i++)
+			{
+				for (int j = 0; j < cols; j++)
+				{
+					printf("%c ", maze[i][j]);
+				}
+				printf("\n");
+			}
+			sleep(0);
 			return 1;
 		}
+		system("clear");
+		for (int i = 0; i < rows; i++)
+		{
+			for (int j = 0; j < cols; j++)
+			{
+				printf("%d ", visited[i][j]);
+			}
+			printf("\n");
+		}
+		sleep(0);
 	}
 
-	visited[row][col] = 0;
 	return 0;
 }
 
@@ -136,10 +166,11 @@ void bfs(char maze[MAX_ROWS][MAX_COLS], int rows, int cols, int visited[rows][co
 	visited[pos.row][pos.col] = 1;
 	Position predecessors[rows][cols];
 
-
-	for(int i = 0; i<rows; i++){
-		for(int j = 0; j<cols; j++){
-			predecessors[i][j] = (Position){-1,-1};
+	for (int i = 0; i < rows; i++)
+	{
+		for (int j = 0; j < cols; j++)
+		{
+			predecessors[i][j] = (Position){-1, -1};
 		}
 	}
 
@@ -163,10 +194,21 @@ void bfs(char maze[MAX_ROWS][MAX_COLS], int rows, int cols, int visited[rows][co
 			Position newPos = {nRow, nCol};
 			if (nRow >= 0 && nRow < rows && nCol >= 0 && nCol < cols && !visited[nRow][nCol] && maze[nRow][nCol] != '#')
 			{
+
 				visited[nRow][nCol] = 1;
 				qPush(&q, (Position){nRow, nCol});
 				predecessors[nRow][nCol] = curPos;
 			}
+			system("clear");
+			for (int i = 0; i < rows; i++)
+			{
+				for (int j = 0; j < cols; j++)
+				{
+					printf("%d ", visited[i][j]);
+				}
+				printf("\n");
+			}
+			sleep(0);
 		}
 	}
 
@@ -180,22 +222,24 @@ void bfs(char maze[MAX_ROWS][MAX_COLS], int rows, int cols, int visited[rows][co
 			for (int j = 0; j < cols; j++)
 			{
 				path[i][j] = maze[i][j];
-			}				
-		}
-		
-		Position curr = end;
-		while(!comparePos(curr, pos)){
-			path[curr.row][curr.col] = '1';
-			curr = predecessors[curr.row][curr.col];
+			}
 		}
 
-		for (int i = 0; i < rows; i++)
+		Position curr = end;
+		while (!comparePos(curr, pos))
 		{
-			for (int j = 0; j < cols; j++)
+			path[curr.row][curr.col] = '@';
+			curr = predecessors[curr.row][curr.col];
+			system("clear");
+			for (int i = 0; i < rows; i++)
 			{
-				printf("%c ", path[i][j]);
+				for (int j = 0; j < cols; j++)
+				{
+					printf("%c ", path[i][j]);
+				}
+				printf("\n");
 			}
-			printf("\n");				
+			sleep(0);
 		}
 	}
 	else
@@ -238,15 +282,13 @@ int main()
 
 	printf("\n\nTRAVERSAL:\n");
 
-	bfs(maze, rows, cols, visited, start, end);
-	// if (dfs(maze, rows, cols, visited, start, end))
-	// {
-	// 	printf("Found the end\n");
-
-	// 	printMaze(maze, rows, cols);
-	// }
-	// else
-	// {
-	// 	printf("Couldn't find the end\n");
-	// }
+	// bfs(maze, rows, cols, visited, start, end);
+	if (dfs(maze, rows, cols, visited, start, end))
+	{
+		printf("Found the end\n");
+	}
+	else
+	{
+		printf("Couldn't find the end\n");
+	}
 }
